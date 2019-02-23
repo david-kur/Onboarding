@@ -57,9 +57,10 @@ namespace Onboard.Controllers
         {
             using (var db = new OnboardingEntities())
             {
-                var deleted = db.Stores.FirstOrDefault(x => x.Id == store.Id);
+                var deleted = db.Stores.SingleOrDefault(x => x.Id == store.Id);
                 if (deleted != null)
                 {
+                    db.Sales.RemoveRange(deleted.ProductSold);
                     db.Stores.Remove(deleted);
                     db.SaveChanges();
                 }

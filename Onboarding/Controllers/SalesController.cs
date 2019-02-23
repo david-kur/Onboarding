@@ -91,7 +91,7 @@ namespace Onboard.Controllers
         {
             using (var db = new OnboardingEntities())
             {
-                var deleted = db.Sales.FirstOrDefault(x => x.Id == sales.Id);
+                var deleted = db.Sales.SingleOrDefault(x => x.Id == sales.Id);
                 if (deleted != null)
                 {
                     db.Sales.Remove(deleted);

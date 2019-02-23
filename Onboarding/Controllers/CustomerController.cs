@@ -57,10 +57,11 @@ namespace Onboard.Controllers
         {
             using (var db = new OnboardingEntities())
             {
-                var deleteCust = db.Customers.FirstOrDefault(x => x.Id == customer.Id);
-                if (deleteCust != null)
+                var deleted = db.Customers.SingleOrDefault(x => x.Id == customer.Id);
+                if (deleted != null)
                 {
-                    db.Customers.Remove(deleteCust);
+                    db.Sales.RemoveRange(deleted.ProductSold);
+                    db.Customers.Remove(deleted);
                     db.SaveChanges();
                 }
                 return Json(new { Success = true });
