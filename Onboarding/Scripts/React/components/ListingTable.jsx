@@ -48,14 +48,14 @@ class ListingTable extends React.Component {
       contentType: 'application/json',
       success: function (response) {
         this.setState({
-          serviceList: response,
+          serviceList: response, activePage: 1,
           sortBy: { column: 'Id', order: 'asc' },
           serviceName, columnHead, populateHead,
         });
       }.bind(this),
-      error: function (error) {
+      error: function (err) {
         alert('ERROR!');
-        console.log(error);
+        console.log(err);
       }
     });
   }
@@ -72,9 +72,9 @@ class ListingTable extends React.Component {
         alert('SUCCESS');
         this.loadData();
       }.bind(this),
-      error: function (error) {
+      error: function (err) {
         alert('ERROR!');
-        console.log(error);
+        console.log(err);
       }
     });
   }
