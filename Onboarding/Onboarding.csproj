@@ -128,10 +128,11 @@
     <Content Include="Scripts\jquery-1.10.2.js" />
     <Content Include="Scripts\jquery-1.10.2.min.js" />
     <Content Include="Scripts\modernizr-2.6.2.js" />
+    <Content Include="Scripts\React\components\Navbar.jsx" />
     <Content Include="Scripts\React\components\tools\date.format.js" />
     <Content Include="Scripts\React\components\modal\DeleteModal.jsx" />
     <Content Include="Scripts\React\dist\bundle.js" />
-    <Content Include="Scripts\React\App.jsx" />
+    <Content Include="Scripts\React\components\App.jsx" />
     <Content Include="Content\semantic.min.css" />
     <Content Include="Scripts\React\components\modal\InputModal.jsx" />
     <Content Include="Scripts\React\components\modal\InputModalContent.jsx" />
