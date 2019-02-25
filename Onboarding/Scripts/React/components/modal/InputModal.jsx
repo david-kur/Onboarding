@@ -51,7 +51,7 @@ class InputModal extends React.Component {
       else input[head.name] = '';
     })
     if (add) this.setState({ inputValue: input });
-    else this.setState({ disableConfirmButton: true });
+    else this.setState({ disableConfirmButton: false });
   }
 
 
@@ -88,7 +88,7 @@ class InputModal extends React.Component {
       modalHeaderName = "Edit " + serviceName;
       modalButtonConfirmName = "Edit";
     }
-    if (!inputHead) return <p>Loading...</p>;
+    if (!inputHead) return <React.Fragment />;
 
     return (
       <Modal dimmer='blurring' open={isOpen} size="tiny">
