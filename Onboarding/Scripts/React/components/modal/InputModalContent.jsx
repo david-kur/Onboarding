@@ -33,9 +33,7 @@ class InputModalContent extends React.Component {
   handleChange({ target }, dropdownValue) {
     const { head, onInputChanged } = this.props;
     let error = '';
-
     const inputName = head.type === 'dropdown' ? dropdownValue.name : target.name;
-
     let inputValue = head.type === 'dropdown' ? dropdownValue.value : target.value;
 
     if (inputValue == '') {
@@ -50,14 +48,8 @@ class InputModalContent extends React.Component {
 
   componentDidMount() {
     const { head, inputValue } = this.props;
-
-    if (head.type == 'dropdown') { this.populateDropdown(); }
-    let input = '';
-
-    if (inputValue === undefined) input = '';
-      else input = inputValue[head.name];
-
-    this.setState({ input: input });
+    if (head.type === 'dropdown') { this.populateDropdown(); }
+    this.setState({ input : inputValue[head.name] });
   }
 
   render() {
@@ -69,10 +61,10 @@ class InputModalContent extends React.Component {
 
       case 'date':
         let date = new Date();
-        if (!add) {
-          date = new Date(parseInt(inputValue[head.name].substr(6)));
-          defaultValue = date.format("yyyy-mm-dd");
-        }
+        if (!add) date = new Date(parseInt(inputValue[head.name].substr(6)));
+          else date = new Date();
+        defaultValue = date.format("yyyy-mm-dd");
+
         return (
           <React.Fragment>
             <h4>{head.name}</h4>
