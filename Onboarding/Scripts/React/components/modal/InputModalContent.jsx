@@ -1,5 +1,5 @@
 ﻿import React from 'react';
-import { Form } from 'semantic-ui-react';
+import { Form, Dropdown } from 'semantic-ui-react';
 import '../tools/date.format.js';
 
 class InputModalContent extends React.Component {
@@ -7,20 +7,11 @@ class InputModalContent extends React.Component {
     super(props);
     this.state = {
       populate: null,
-      input: {
-        Name: '',
-        Address: '',
-        Price: '',
-        //DateSold: '',
-        CustomerId: '',
-        ProductId: '',
-        StoreId: '',
-      },
-      error: {},
+      input: '',
+      error: '',
     };
     this.populateDropdown = this.populateDropdown.bind(this);
     this.handleChange = this.handleChange.bind(this);
-    this.validate = this.validate.bind(this);
   }
 
   populateDropdown() {
@@ -39,40 +30,34 @@ class InputModalContent extends React.Component {
     });
   }
 
-  validate(target, name) {
-    if (target.value.trim() === '') return name + ' is required';
-  }
+  handleChange({ target }, dropdownValue) {
+    const { head, onInputChanged } = this.props;
+    let error = '';
 
-  handleChange({ target }, name) {
-    const { error, input } = this.state;
-    const { onValidationPassed } = this.props;
-    const errorMessage = this.validate(target, name);
+    const inputName = head.type === 'dropdown' ? dropdownValue.name : target.name;
 
-    if (errorMessage) error[name] = errorMessage;
-    else delete error[name];
+    let inputValue = head.type === 'dropdown' ? dropdownValue.value : target.value;
 
-    input[name] = target.value;
-    this.setState({ input, error });
+    if (inputValue == '') {
+      error = inputName + ' is required';
+      onInputChanged(inputName, null)
+    } else {
+      onInputChanged(inputName, inputValue);
+    }
 
-    if (Object.keys(error).length === 0) onValidationPassed(true);
-    else onValidationPassed(false);
-
+    this.setState({ input: inputValue, error });
   }
 
   componentDidMount() {
-    const { head, inputValue, onValidationPassed } = this.props;
+    const { head, inputValue } = this.props;
 
     if (head.type == 'dropdown') { this.populateDropdown(); }
-    const input = this.state.input;
+    let input = '';
 
-    if (inputValue === undefined) {
-      input[head.name] = ''
-      onValidationPassed(false);
-    } else {
-      input[head.name] = inputValue[head.name];
-      onValidationPassed(true);
-    }
-    this.setState({ input });
+    if (inputValue === undefined) input = '';
+      else input = inputValue[head.name];
+
+    this.setState({ input: input });
   }
 
   render() {
@@ -84,13 +69,17 @@ class InputModalContent extends React.Component {
 
       case 'date':
         let date = new Date();
-        if (!add) date = new Date(parseInt(inputValue[head.name].substr(6)));
-        let newDate = date.format("yyyy-mm-dd");
+        if (!add) {
+          date = new Date(parseInt(inputValue[head.name].substr(6)));
+          defaultValue = date.format("yyyy-mm-dd");
+        }
         return (
           <React.Fragment>
             <h4>{head.name}</h4>
             <div>
-              <input id={head.name} type="date" min="1900-01-01" defaultValue={newDate} />
+              <input name={head.name} type="date" min="1900-01-01"
+                defaultValue={defaultValue}
+                value={this.state.input[head.name]} onChange={this.handleChange} />
             </div>
           </React.Fragment>
         );
@@ -99,32 +88,46 @@ class InputModalContent extends React.Component {
       case 'dropdown':
         if (!populate) return <p>Loading...</p>;
         let headDisplayedName = head.name.slice(0, -2);
+        let defaultName = "";
 
-        populate[headDisplayedName].map(item => {
+        let options = populate[headDisplayedName].map(item => {
           if (!add) {
-            if (item.Name == inputValue[headDisplayedName]) defaultValue = item.Id;
+            if (item.Name == inputValue[headDisplayedName]) {
+              defaultValue = item.Id;
+              defaultName = item.Name;
+            }
           } else defaultValue = 1;
+          let opt = {};
+          opt['key'] = item.Id;
+          opt['value'] = item.Id;
+          opt['text'] = item.Name;
+          return opt;
         });
         return (
-          <Form.Group>
-            <Form.Field id={head.name} label={headDisplayedName} defaultValue={defaultValue} control="select" width="10"
-              onChange={(e) => this.handleChange(e, head.name)}>
-              {populate[headDisplayedName].map(item => <option key={item.Id} value={item.Id}>{item.Name}</option>)}
-            </Form.Field>
-          </Form.Group>
+          <React.Fragment>
+            <h4>{headDisplayedName}</h4>
+            <Dropdown onChange={(e, { name, value }) => this.handleChange(e, { name, value })}
+              options={options}
+              placeholder={defaultName}
+              selection
+              value={this.state.input[head.name]}
+              name={head.name}
+            />
+          </React.Fragment>
         );
         break;
 
       default:
         if (!add) defaultValue = inputValue[head.name];
+        else defaultValue = "";
         return (
           <React.Fragment>
             <h4>{head.name}</h4>
             <div className="ui fluid input">
-              <input id={head.name} label={head.name} type={head.type}
-                value={this.state.input[head.name]} onChange={(e) => this.handleChange(e, head.name)} />
+              <input label={head.name} type={head.type} name={head.name} defaultValue={defaultValue}
+                value={this.state.input[head.name]} onChange={this.handleChange} />
             </div>
-            {error[head.name] && <div>{error[head.name]}</div>}
+            {error && <div className="ui pointing red basic label">{error}</div>}
           </React.Fragment>
         );
     };

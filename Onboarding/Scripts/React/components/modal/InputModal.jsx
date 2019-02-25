@@ -11,23 +11,48 @@ class InputModal extends React.Component {
       inputHead: null,
       inputValue: null,
       disableConfirmButton: true,
+      error: {},
     };
     this.show = this.show.bind(this);
     this.hide = this.hide.bind(this);
     this.confirm = this.confirm.bind(this);
-    this.handleValidationPassed = this.handleValidationPassed.bind(this);
+    this.handleInputChanged = this.handleInputChanged.bind(this);
   }
 
-  handleValidationPassed(status) {
-    if (status) this.setState({ disableConfirmButton: false })
-    else this.setState({ disableConfirmButton: true })
+  handleInputChanged(name, value) {
+    const { inputHead, inputValue, error } = this.state;
+
+    inputValue[name] = value;
+    if (!value) error[name] = true;
+    else error[name] = false;
+
+    this.setState({ inputValue, error });
+
+    let errorCount = 0;
+    inputHead.map(head => {
+      if (error[head.name] || error[head.name] === undefined) errorCount++;
+    });
+
+    if (errorCount == 0) this.setState({ disableConfirmButton: false });
+    else this.setState({ disableConfirmButton: true });
   }
 
   show(add, inputHead, inputValue) {
     this.setState({ isOpen: true, add, inputHead, inputValue });
+    let input = {};
+    const { error } = this.state;
+
+    inputHead.map(head => {
+      if (!add) error[head.name] = false;
+      else input[head.name] = '';
+    })
+    if (add) this.setState({ inputValue: input });
   }
 
-  hide() { this.setState({ isOpen: false }); }
+  hide() {
+    this.setState({ disableConfirmButton: true });
+    this.setState({ isOpen: false });
+  }
 
   confirm() {
     const { inputHead, inputValue } = this.state;
@@ -38,10 +63,10 @@ class InputModal extends React.Component {
       mode = 'Update';
     }
     inputHead.map(head => {
-      let selector = '#' + head.name;
-      data[head.name] = $(selector).val();
+      data[head.name] = inputValue[head.name];
     });
     this.props.onConfirm(mode, data);
+    this.setState({ disableConfirmButton: true });
     this.hide();
   }
 
@@ -61,12 +86,15 @@ class InputModal extends React.Component {
         <Modal.Header>{modalHeaderName}</Modal.Header>
         <Modal.Content>
           <Form>
-            {
-              inputHead.map(head => (
-                <InputModalContent key={head.name} add={add} head={head} inputValue={inputValue}
-                  onValidationPassed={this.handleValidationPassed} />
-              ))
-            }
+            <Form.Field>
+              {
+                inputHead.map(head => (
+                  <InputModalContent key={head.name} add={add} head={head} inputValue={inputValue}
+                    onInputChanged={this.handleInputChanged} />
+                ))
+
+              }
+            </Form.Field>
           </Form>
         </Modal.Content>
         <Modal.Actions>

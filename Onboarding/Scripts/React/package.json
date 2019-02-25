@@ -16,7 +16,6 @@
     "babel-preset-react": "^6.24.1",
     "react": "^16.8.1",
     "react-dom": "^16.8.1",
-    "react-router-dom": "^4.3.1",
     "react-tag-input": "^6.2.1",
     "semantic-ui-react": "^0.85.0",
     "webpack": "^4.5.0",
