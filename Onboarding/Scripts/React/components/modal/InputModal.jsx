@@ -19,6 +19,8 @@ class InputModal extends React.Component {
     this.handleInputChanged = this.handleInputChanged.bind(this);
   }
 
+
+  // Validation on input change
   handleInputChanged(name, value) {
     const { inputHead, inputValue, error } = this.state;
 
@@ -37,6 +39,8 @@ class InputModal extends React.Component {
     else this.setState({ disableConfirmButton: true });
   }
 
+
+  // Show modal
   show(add, inputHead, inputValue) {
     this.setState({ isOpen: true, add, inputHead, inputValue });
     let input = {};
@@ -47,29 +51,34 @@ class InputModal extends React.Component {
       else input[head.name] = '';
     })
     if (add) this.setState({ inputValue: input });
+    else this.setState({ disableConfirmButton: true });
   }
 
+
+  // Hide modal
   hide() {
     this.setState({ disableConfirmButton: true });
     this.setState({ isOpen: false });
   }
 
+
+  // Confirmation button clicked
   confirm() {
-    const { inputHead, inputValue } = this.state;
+    const { add, inputHead, inputValue } = this.state;
     let data = {};
     let mode = 'Add';
-    if (!this.state.add) {
+    if (!add) {
       data.Id = inputValue.Id;
       mode = 'Update';
     }
-    inputHead.map(head => {
-      data[head.name] = inputValue[head.name];
-    });
+    inputHead.map(head => data[head.name] = inputValue[head.name]);
     this.props.onConfirm(mode, data);
     this.setState({ disableConfirmButton: true });
     this.hide();
   }
 
+
+  // Render function
   render() {
     const { serviceName } = this.props;
     let { add, isOpen, inputHead, inputValue, disableConfirmButton } = this.state;
@@ -79,7 +88,7 @@ class InputModal extends React.Component {
       modalHeaderName = "Edit " + serviceName;
       modalButtonConfirmName = "Edit";
     }
-    if (!inputHead) return <p></p>;
+    if (!inputHead) return <p>Loading...</p>;
 
     return (
       <Modal dimmer='blurring' open={isOpen} size="tiny">
@@ -92,7 +101,6 @@ class InputModal extends React.Component {
                   <InputModalContent key={head.name} add={add} head={head} inputValue={inputValue}
                     onInputChanged={this.handleInputChanged} />
                 ))
-
               }
             </Form.Field>
           </Form>

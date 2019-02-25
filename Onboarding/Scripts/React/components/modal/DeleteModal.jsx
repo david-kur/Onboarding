@@ -10,15 +10,19 @@ class DeleteModal extends React.Component {
     this.confirm = this.confirm.bind(this);
   }
 
+  // Show modal
   show(data) { this.setState({ open: true, data }) }
 
+  // Hide modal
   hide() { this.setState({ open: false }) }
 
+  // Confirmation button clicked
   confirm() {
     this.props.onConfirm('Delete', this.state.data);
     this.hide();
   }
 
+  // Render function
   render() {
     const { serviceName } = this.props;
     const modalHeaderName = "Delete " + serviceName;

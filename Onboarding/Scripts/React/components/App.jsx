@@ -22,7 +22,6 @@ class App extends React.Component {
     switch (name) {
       case 'Products':
         serviceName = "Product";
-        populateHead = null;
         columnHead = [
           { name: 'Name', type: 'text' },
           { name: 'Price', type: 'money' },
@@ -30,7 +29,6 @@ class App extends React.Component {
         break;
       case 'Stores':
         serviceName = "Store";
-        populateHead = null;
         columnHead = [
           { name: 'Name', type: 'text' },
           { name: 'Address', type: 'text' },
@@ -53,7 +51,6 @@ class App extends React.Component {
         break;
       default:
         serviceName = "Customer";
-        populateHead = null;
         columnHead = [
           { name: 'Name', type: 'text' },
           { name: 'Address', type: 'text' },

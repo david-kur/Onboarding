@@ -14,6 +14,7 @@ class InputModalContent extends React.Component {
     this.handleChange = this.handleChange.bind(this);
   }
 
+  // Populate data for dropdown type input
   populateDropdown() {
     let Url = '/Sales/GetSalesPopulate';
     $.ajax({
@@ -30,6 +31,7 @@ class InputModalContent extends React.Component {
     });
   }
 
+  // Handle on input change for controlled element
   handleChange({ target }, dropdownValue) {
     const { head, onInputChanged } = this.props;
     let error = '';
@@ -39,19 +41,22 @@ class InputModalContent extends React.Component {
     if (inputValue == '') {
       error = inputName + ' is required';
       onInputChanged(inputName, null)
-    } else {
-      onInputChanged(inputName, inputValue);
     }
+    else onInputChanged(inputName, inputValue);
 
     this.setState({ input: inputValue, error });
   }
 
+
+  // Component did mount
   componentDidMount() {
     const { head, inputValue } = this.props;
     if (head.type === 'dropdown') { this.populateDropdown(); }
     this.setState({ input : inputValue[head.name] });
   }
 
+
+  // Render function
   render() {
     const { add, head, inputValue } = this.props;
     const { populate, error } = this.state;
@@ -59,10 +64,11 @@ class InputModalContent extends React.Component {
 
     switch (head.type) {
 
+      // Date input type
       case 'date':
         let date = new Date();
         if (!add) date = new Date(parseInt(inputValue[head.name].substr(6)));
-          else date = new Date();
+        else date = new Date();
         defaultValue = date.format("yyyy-mm-dd");
 
         return (
@@ -71,30 +77,28 @@ class InputModalContent extends React.Component {
             <div>
               <input name={head.name} type="date" min="1900-01-01"
                 defaultValue={defaultValue}
-                value={this.state.input[head.name]} onChange={this.handleChange} />
+                value={this.state.input[head.name]}
+                onChange={this.handleChange} />
             </div>
           </React.Fragment>
         );
         break;
 
+      // Dropdown input type
       case 'dropdown':
         if (!populate) return <p>Loading...</p>;
         let headDisplayedName = head.name.slice(0, -2);
         let defaultName = "";
 
         let options = populate[headDisplayedName].map(item => {
-          if (!add) {
-            if (item.Name == inputValue[headDisplayedName]) {
-              defaultValue = item.Id;
-              defaultName = item.Name;
-            }
-          } else defaultValue = 1;
+          if (!add && (item.Name == inputValue[headDisplayedName])) defaultName = item.Name;
           let opt = {};
           opt['key'] = item.Id;
           opt['value'] = item.Id;
           opt['text'] = item.Name;
           return opt;
         });
+
         return (
           <React.Fragment>
             <h4>{headDisplayedName}</h4>
@@ -109,14 +113,16 @@ class InputModalContent extends React.Component {
         );
         break;
 
+      // Default or text input type
       default:
         if (!add) defaultValue = inputValue[head.name];
         else defaultValue = "";
+
         return (
           <React.Fragment>
             <h4>{head.name}</h4>
             <div className="ui fluid input">
-              <input label={head.name} type={head.type} name={head.name} defaultValue={defaultValue}
+              <input type={head.type} name={head.name} defaultValue={defaultValue}
                 value={this.state.input[head.name]} onChange={this.handleChange} />
             </div>
             {error && <div className="ui pointing red basic label">{error}</div>}

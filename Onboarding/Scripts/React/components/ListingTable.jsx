@@ -95,21 +95,20 @@ class ListingTable extends React.Component {
 
   handleNewButtonClicked(add) {
     const { columnHead, populateHead } = this.state;
-    if (!populateHead) {
-      this.showInputModal(add, columnHead);
-    } else this.showInputModal(add, populateHead);
+    if (!populateHead) this.showInputModal(add, columnHead);
+    else this.showInputModal(add, populateHead);
   }
 
   handleEditButtonClicked(add, data) {
     const { columnHead, populateHead } = this.state;
-    if (!populateHead) {
-      this.showInputModal(add, columnHead, data);
-    } else this.showInputModal(add, populateHead, data);
+    if (!populateHead) this.showInputModal(add, columnHead, data);
+    else this.showInputModal(add, populateHead, data);
   }
 
   DeleteModalRef({ show }) {
     this.showDeleteModal = show;
   }
+
   handleDeleteButtonClicked(data) {
     this.showDeleteModal(data);
   }
@@ -153,7 +152,7 @@ class ListingTable extends React.Component {
         </div>
 
         <InputModal ref={this.InputModalRef} onConfirm={this.submitData} serviceName={serviceName} />
-          <DeleteModal ref={this.DeleteModalRef} onConfirm={this.submitData} serviceName={serviceName} />
+        <DeleteModal ref={this.DeleteModalRef} onConfirm={this.submitData} serviceName={serviceName} />
 
         <div className="ui basic segment">
           <Table sortable celled striped fixed>
